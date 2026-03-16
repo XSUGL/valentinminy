@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аришенька 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #e8839a;
+    --blush: #f7c5d0;
+    --cream: #fff5f7;
+    --deep: #c45c78;
+    --petal: #fde8ee;
+    --gold: #d4a0a8;
+  }
+
+  html, body {
+    width: 100%; min-height: 100vh;
+    background: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+  }
+
+  /* CANVAS PETALS */
+  #petals-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+
+  /* INTRO PAGE */
+  #page-intro {
+    background: linear-gradient(160deg, #fff0f4 0%, #fde4ec 50%, #f9cdd8 100%);
+  }
+
+  .envelope-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2.5rem;
+    animation: fadeUp 1.2s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .title-script {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    color: var(--deep);
+    text-shadow: 0 2px 20px rgba(196,92,120,0.25);
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  /* ENVELOPE */
+  .envelope {
+    width: 220px; height: 160px;
+    position: relative; cursor: pointer;
+    filter: drop-shadow(0 8px 30px rgba(196,92,120,0.3));
+    transition: transform 0.3s ease;
+  }
+  .envelope:hover { transform: scale(1.05) rotate(-1deg); }
+
+  .env-body {
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #f4b8c8, #e8839a);
+    border-radius: 4px 4px 8px 8px;
+  }
+  .env-flap {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 0; width: 0;
+    border-left: 110px solid transparent;
+    border-right: 110px solid transparent;
+    border-top: 90px solid #f0a0b8;
+    transform-origin: top center;
+    transition: transform 0.6s ease;
+    z-index: 2;
+  }
+  .envelope.open .env-flap {
+    transform: rotateX(180deg);
+  }
+  .env-left {
+    position: absolute; bottom: 0; left: 0;
+    width: 0; height: 0;
+    border-bottom: 80px solid #e07090;
+    border-right: 110px solid transparent;
+  }
+  .env-right {
+    position: absolute; bottom: 0; right: 0;
+    width: 0; height: 0;
+    border-bottom: 80px solid #d86080;
+    border-left: 110px solid transparent;
+  }
+  .env-heart {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem; z-index: 3;
+    transition: transform 0.3s ease;
+    animation: heartbeat 1.8s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: translate(-50%,-50%) scale(1); }
+    50%      { transform: translate(-50%,-50%) scale(1.15); }
+  }
+
+  .tap-hint {
+    font-size: 0.9rem;
+    color: var(--deep);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+  }
+
+  /* MAIN PAGE */
+  #page-main {
+    display: none;
+    background: linear-gradient(160deg, #fff0f4 0%, #fde4ec 60%, #f9cdd8 100%);
+    gap: 0;
+    padding: 0;
+  }
+
+  .main-inner {
+    width: 100%; max-width: 520px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2.8rem;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  /* HEADER */
+  .main-header {
+    text-align: center;
+    animation: fadeUp 0.8s ease both;
+  }
+  .main-header .for-whom {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(2.8rem, 10vw, 4.5rem);
+    color: var(--deep);
+    display: block;
+    line-height: 1;
+  }
+  .main-header .subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-top: 0.5rem;
+  }
+
+  /* DAYS COUNTER */
+  .counter-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 40px rgba(196,92,120,0.12);
+    border: 1px solid rgba(232,131,154,0.2);
+    animation: fadeUp 0.8s 0.2s ease both;
+    width: 100%;
+  }
+  .counter-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 1rem;
+  }
+  .counter-numbers {
+    display: flex; gap: 1.2rem;
+    justify-content: center; align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .counter-unit {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  }
+  .counter-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 10vw, 4rem);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1;
+    min-width: 2ch;
+    text-align: center;
+  }
+  .counter-unit-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .counter-sep {
+    font-size: 2rem;
+    color: var(--blush);
+    padding-bottom: 0.8rem;
+  }
+  .counter-date {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  /* HEART ANIMATION */
+  .heart-section {
+    position: relative;
+    width: 140px; height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .big-heart {
+    font-size: 5rem;
+    animation: heartbeat2 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 4px 20px rgba(196,92,120,0.5));
+  }
+  @keyframes heartbeat2 {
+    0%,100% { transform: scale(1); }
+    30%      { transform: scale(1.12); }
+    60%      { transform: scale(1.05); }
+  }
+  .heart-ring {
+    position: absolute;
+    width: 130px; height: 130px;
+    border: 2px solid rgba(232,131,154,0.3);
+    border-radius: 50%;
+    animation: ring-pulse 2s ease-in-out infinite;
+  }
+  .heart-ring:nth-child(2) { animation-delay: 0.5s; }
+  @keyframes ring-pulse {
+    0%   { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* MESSAGE */
+  .message-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.2rem 2rem;
+    box-shadow: 0 4px 40px rgba(196,92,120,0.12);
+    border: 1px solid rgba(232,131,154,0.2);
+    width: 100%;
+    animation: fadeUp 0.8s 0.4s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+  .message-card::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.5rem; left: 1rem;
+    font-family: 'Sacramento', cursive;
+    font-size: 8rem;
+    color: rgba(232,131,154,0.1);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .message-text {
+    font-size: clamp(1.05rem, 3.5vw, 1.2rem);
+    line-height: 1.9;
+    color: #7a3a50;
+    font-weight: 300;
+    font-style: italic;
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+
+  /* MUSIC */
+  .music-btn {
+    background: linear-gradient(135deg, var(--rose), var(--deep));
+    border: none; outline: none;
+    color: white;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(196,92,120,0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: fadeUp 0.8s 0.6s ease both;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .music-btn:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(196,92,120,0.5); }
+  .music-btn.playing { animation: fadeUp 0.8s 0.6s ease both, spin 3s linear infinite; }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* FLOWERS DECORATION */
+  .flowers-row {
+    display: flex; gap: 1rem;
+    font-size: 1.8rem;
+    animation: fadeUp 0.8s 0.7s ease both;
+    opacity: 0.85;
+  }
+  .flower { animation: sway 3s ease-in-out infinite; }
+  .flower:nth-child(2) { animation-delay: 0.4s; }
+  .flower:nth-child(3) { animation-delay: 0.8s; }
+  .flower:nth-child(4) { animation-delay: 0.2s; }
+  .flower:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes sway {
+    0%,100% { transform: rotate(-5deg) scale(1); }
+    50%      { transform: rotate(5deg) scale(1.08); }
+  }
+
+  /* FOOTER SIGN */
+  .footer-sign {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: var(--deep);
+    text-align: center;
+    opacity: 0.8;
+    animation: fadeUp 0.8s 0.8s ease both;
+  }
+
+  /* FLOATING HEARTS */
+  .float-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    font-size: 1.2rem;
+    animation: floatUp 3s ease-in forwards;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-200px) scale(0.5); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="petals-canvas"></canvas>
+
+<!-- PAGE 1: ENVELOPE -->
+<div class="page" id="page-intro">
+  <div class="envelope-wrap">
+    <div class="title-script">Аришенька</div>
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body"></div>
+      <div class="env-left"></div>
+      <div class="env-right"></div>
+      <div class="env-flap"></div>
+      <div class="env-heart">💌</div>
+    </div>
+    <div class="tap-hint">нажми чтобы открыть</div>
+  </div>
+</div>
+
+<!-- PAGE 2: VALENTINE -->
+<div class="page" id="page-main">
+  <div class="main-inner">
+
+    <div class="main-header">
+      <span class="for-whom">Аришенька</span>
+      <span class="subtitle">моё солнышко</span>
+    </div>
+
+    <div class="counter-card">
+      <div class="counter-label">мы вместе уже</div>
+      <div class="counter-numbers">
+        <div class="counter-unit">
+          <span class="counter-num" id="cnt-months">0</span>
+          <span class="counter-unit-label">месяцев</span>
+        </div>
+        <span class="counter-sep">·</span>
+        <div class="counter-unit">
+          <span class="counter-num" id="cnt-days">0</span>
+          <span class="counter-unit-label">дней</span>
+        </div>
+        <span class="counter-sep">·</span>
+        <div class="counter-unit">
+          <span class="counter-num" id="cnt-hours">0</span>
+          <span class="counter-unit-label">часов</span>
+        </div>
+      </div>
+      <div class="counter-date">с 7 сентября 2025 года 🌸</div>
+    </div>
+
+    <div class="heart-section">
+      <div class="heart-ring"></div>
+      <div class="heart-ring"></div>
+      <div class="big-heart">❤️</div>
+    </div>
+
+    <div class="message-card">
+      <p class="message-text">
+        Люблю тебя безумно сильно,<br>
+        мое милое солнышко.<br><br>
+        Ты для меня больше чем семья,<br>
+        ты для меня весь мир.<br><br>
+        Живу только тобой, малыш.<br><br>
+        Люблю тебя безумно сильно.
+      </p>
+    </div>
+
+    <div class="flowers-row">
+      <span class="flower">🌸</span>
+      <span class="flower">🌷</span>
+      <span class="flower">🌹</span>
+      <span class="flower">🌷</span>
+      <span class="flower">🌸</span>
+    </div>
+
+    <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Музыка">🎵</button>
+
+    <div class="footer-sign">с любовью, твой папочка ♡</div>
+
+  </div>
+</div>
+
+<!-- SOUNDCLOUD: Nick Cave - O Children (official Mute Records) -->
+<iframe id="sc-iframe"
+  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/muterecords/o-children&color=%23e8839a&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"
+  style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;"
+  allow="autoplay">
+</iframe>
+<script src="https://w.soundcloud.com/player/api.js"></script>
+
+<script>
+// ── PETALS ──────────────────────────────────────────────────────────────
+const canvas = document.getElementById('petals-canvas');
+const ctx = canvas.getContext('2d');
+let petals = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function createPetal() {
+  return {
+    x: Math.random() * canvas.width,
+    y: -20,
+    size: 8 + Math.random() * 12,
+    speedY: 0.8 + Math.random() * 1.4,
+    speedX: -0.5 + Math.random() * 1,
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.04,
+    opacity: 0.4 + Math.random() * 0.5,
+    color: ['#f7c5d0','#e8839a','#ffdde6','#f9aec0','#fce4ec'][Math.floor(Math.random()*5)]
+  };
+}
+
+for (let i = 0; i < 25; i++) {
+  const p = createPetal();
+  p.y = Math.random() * window.innerHeight;
+  petals.push(p);
+}
+
+function drawPetal(p) {
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.rot);
+  ctx.globalAlpha = p.opacity;
+  ctx.fillStyle = p.color;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, p.size / 2, p.size, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function animatePetals() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  petals.forEach(p => {
+    p.y += p.speedY;
+    p.x += p.speedX + Math.sin(p.y * 0.02) * 0.5;
+    p.rot += p.rotSpeed;
+    if (p.y > canvas.height + 20) {
+      Object.assign(p, createPetal());
+    }
+    drawPetal(p);
+  });
+  requestAnimationFrame(animatePetals);
+}
+animatePetals();
+
+// ── COUNTER ──────────────────────────────────────────────────────────────
+const startDate = new Date('2025-09-07T00:00:00');
+
+function updateCounter() {
+  const now = new Date();
+  const diff = now - startDate;
+  if (diff < 0) return;
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const totalHours   = Math.floor(totalMinutes / 60);
+  const totalDays    = Math.floor(totalHours / 24);
+
+  const startM = startDate.getMonth() + startDate.getFullYear() * 12;
+  const nowM   = now.getMonth() + now.getFullYear() * 12;
+  const months = nowM - startM - (now.getDate() < startDate.getDate() ? 1 : 0);
+
+  const monthsStart = new Date(startDate);
+  monthsStart.setMonth(monthsStart.getMonth() + months);
+  const remainDays = Math.floor((now - monthsStart) / (1000 * 60 * 60 * 24));
+
+  document.getElementById('cnt-months').textContent = Math.max(0, months);
+  document.getElementById('cnt-days').textContent   = remainDays;
+  document.getElementById('cnt-hours').textContent  = now.getHours().toString().padStart(2,'0');
+}
+
+updateCounter();
+setInterval(updateCounter, 60000);
+
+// ── ENVELOPE OPEN ────────────────────────────────────────────────────────
+function openEnvelope() {
+  const env = document.getElementById('envelope');
+  env.classList.add('open');
+  setTimeout(() => {
+    document.getElementById('page-intro').style.display = 'none';
+    const main = document.getElementById('page-main');
+    main.style.display = 'flex';
+    main.style.animation = 'fadeUp 0.8s ease both';
+    spawnHearts(window.innerWidth / 2, window.innerHeight / 2, 12);
+  }, 700);
+}
+
+// ── MUSIC (SoundCloud Widget API) ────────────────────────────────────────
+let playing = false;
+let scWidget = null;
+
+window.addEventListener('load', () => {
+  const iframe = document.getElementById('sc-iframe');
+  scWidget = SC.Widget(iframe);
+  scWidget.bind(SC.Widget.Events.READY, () => {
+    scWidget.setVolume(60);
+  });
+});
+
+function toggleMusic() {
+  const btn = document.getElementById('music-btn');
+  if (!scWidget) return;
+  if (playing) {
+    scWidget.pause();
+    btn.textContent = '🎵';
+    btn.classList.remove('playing');
+    playing = false;
+  } else {
+    scWidget.play();
+    btn.textContent = '🎶';
+    btn.classList.add('playing');
+    playing = true;
+  }
+}
+
+// ── FLOATING HEARTS ON CLICK ─────────────────────────────────────────────
+document.addEventListener('click', (e) => {
+  if (document.getElementById('page-main').style.display !== 'none') {
+    spawnHearts(e.clientX, e.clientY, 3);
+  }
+});
+
+function spawnHearts(x, y, count) {
+  const emojis = ['❤️','🩷','💕','💗','🌸','✨'];
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'float-heart';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (x - 12 + (Math.random() - 0.5) * 60) + 'px';
+      el.style.top  = (y - 12) + 'px';
+      el.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 80);
+  }
+}
+</script>
+</body>
+</html>
