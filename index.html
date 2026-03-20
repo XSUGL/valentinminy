@@ -575,7 +575,7 @@ async function runCinematic(){
 }
 
 function startFlight(){
-  const hb=document.getElementById('heart-btn').getBoundingClientRect();
+  const hbEl=document.querySelector('.heart-btn');const hb=hbEl?hbEl.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
   spawnF(hb.left+hb.width/2,hb.top+hb.height/2,10);
   showScreen('s2');
   runCinematic();
