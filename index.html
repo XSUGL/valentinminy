@@ -28,14 +28,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action
 /* Ambient glow behind heart */
 .glow-orb{
   position:absolute;width:60vw;height:60vw;max-width:400px;max-height:400px;
-  border-radius:50%;
+  border-radius:50%;z-index:0;
   background:radial-gradient(circle,rgba(232,80,120,.18) 0%,transparent 70%);
   animation:orbPulse 3s ease-in-out infinite;
   pointer-events:none;
 }
 @keyframes orbPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}}
 
-.s1-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2.2rem;}
+.s1-inner{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:2.2rem;}
 
 .arisha-title{
   font-family:'Sacramento',cursive;
@@ -227,11 +227,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action
   <div class="glow-orb"></div>
   <div class="s1-inner">
     <div class="arisha-title">Аришенька</div>
-    <div class="heart-wrap" onclick="startFlight()">
-      <div class="ripple"></div>
-      <div class="ripple"></div>
-      <div class="ripple"></div>
-      <button class="heart-btn" aria-label="Открыть валентинку">
+    <div class="heart-wrap" onclick="startFlight()" style="position:relative;z-index:6;cursor:pointer;">
+      <div class="ripple" style="pointer-events:none;"></div>
+      <div class="ripple" style="pointer-events:none;"></div>
+      <div class="ripple" style="pointer-events:none;"></div>
+      <button class="heart-btn" style="position:relative;z-index:7;" onclick="startFlight()" aria-label="Открыть валентинку">
         <svg class="heart-svg" viewBox="0 0 100 92" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="hg" cx="50%" cy="30%" r="70%">
