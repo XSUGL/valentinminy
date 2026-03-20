@@ -4,621 +4,631 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Аришенька 💌</title>
-<link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://w.soundcloud.com/player/api.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 
 /* ── SCREENS ── */
-.screen{position:fixed;inset:0;opacity:0;pointer-events:none;
-  transition:opacity .9s cubic-bezier(.4,0,.2,1);z-index:10;}
+.screen{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity 1s cubic-bezier(.4,0,.2,1);z-index:10;}
 .screen.active{opacity:1;pointer-events:all;}
 
-/* ══ S1: HEART ══ */
+/* ══════════════════════
+   S1 — HEART
+══════════════════════ */
 #s1{
-  background:linear-gradient(145deg,#fff0f4 0%,#fde4ec 50%,#f8cdd8 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  background:linear-gradient(145deg,#1a0810 0%,#2d1020 40%,#1a0810 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
-#petal-canvas{position:absolute;inset:0;pointer-events:none;}
-.s1-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2rem;padding:2rem;}
+#petal-c{position:absolute;inset:0;pointer-events:none;}
+
+/* Ambient glow behind heart */
+.glow-orb{
+  position:absolute;width:60vw;height:60vw;max-width:400px;max-height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(232,80,120,.18) 0%,transparent 70%);
+  animation:orbPulse 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes orbPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+
+.s1-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2.2rem;}
 
 .arisha-title{
   font-family:'Sacramento',cursive;
-  font-size:clamp(3.2rem,13vw,6rem);
-  color:#b84d6a;
-  text-shadow:0 3px 30px rgba(184,77,106,.3);
-  line-height:1;
-  animation:fadeSlideUp .9s ease both;
+  font-size:clamp(3.5rem,14vw,6.5rem);
+  background:linear-gradient(135deg,#ff8fab,#ff4d6d,#c9184a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(255,77,109,.4));
+  line-height:1;animation:slideDown .9s cubic-bezier(.2,1,.3,1) both;
 }
-.subtitle{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(.6rem,.2rem + 2vw,.78rem);
-  letter-spacing:.25em;text-transform:uppercase;
-  color:#c8708a;opacity:.7;
-  margin-top:.4rem;
-  animation:fadeSlideUp .9s .15s ease both;
-}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 
-/* HEART */
-.heart-wrap{position:relative;display:flex;align-items:center;justify-content:center;animation:fadeSlideUp .9s .25s ease both;}
-.heart-ripple{
-  position:absolute;width:140px;height:140px;border-radius:50%;
-  border:2px solid rgba(232,131,154,.4);
-  animation:ripple 2s ease-out infinite;
+/* HEART BTN */
+.heart-wrap{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fadeUp .9s .2s both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.ripple{position:absolute;border-radius:50%;border:1.5px solid rgba(255,77,109,.4);animation:rip 2.4s ease-out infinite;}
+.ripple:nth-child(1){width:130px;height:130px;}
+.ripple:nth-child(2){width:160px;height:160px;animation-delay:.6s;}
+.ripple:nth-child(3){width:200px;height:200px;animation-delay:1.2s;}
+@keyframes rip{0%{transform:scale(.7);opacity:.8}100%{transform:scale(1.2);opacity:0}}
+
+.heart-btn{
+  background:none;border:none;cursor:pointer;display:block;
+  animation:hbeat 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 0 24px rgba(255,77,109,.6)) drop-shadow(0 12px 40px rgba(255,77,109,.3));
+  transition:filter .15s;z-index:2;position:relative;
 }
-.heart-ripple:nth-child(2){animation-delay:.7s;}
-.heart-ripple:nth-child(3){animation-delay:1.4s;}
-.heart-svg-btn{
-  background:none;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;z-index:2;
-  -webkit-tap-highlight-color:transparent;
-  animation:heartPulse 1.6s ease-in-out infinite;
-  filter:drop-shadow(0 8px 32px rgba(184,77,106,.55));
-}
-.heart-svg-btn:active .heart-svg{transform:scale(.88);}
-.heart-svg{transition:transform .12s;width:clamp(100px,28vw,160px);height:auto;}
+.heart-btn:active{filter:drop-shadow(0 0 40px rgba(255,77,109,.9));}
+.heart-svg{width:clamp(110px,30vw,170px);height:auto;display:block;}
+@keyframes hbeat{0%,100%{transform:scale(1)}35%{transform:scale(1.08)}65%{transform:scale(1.04)}}
 
 .tap-hint{
-  font-family:'Montserrat',sans-serif;
-  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
-  color:#c45c78;
-  animation:fadeSlideUp .9s .4s ease both, breathe 2.2s 1.3s ease-in-out infinite;
+  font-family:'Montserrat',sans-serif;font-weight:300;
+  font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:#ff8fab;
+  animation:fadeUp .9s .4s both, breathe 2.5s 1.4s ease-in-out infinite;
 }
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:.9}}
 
-/* ══ S2: MAP ══ */
-#s2{background:#0f1923;}
+/* ══════════════════════
+   S2 — MAP FLIGHT
+══════════════════════ */
+#s2{background:#0d1520;}
 #map{position:absolute;inset:0;z-index:1;}
 
-/* Custom map style overlay */
-#map-overlay{
-  position:absolute;inset:0;z-index:400;pointer-events:none;
+/* Top fade */
+.map-top-bar{
+  position:absolute;top:0;left:0;right:0;z-index:500;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,15,25,.9) 0%,transparent 100%);
+  padding:1.2rem 1.5rem 3rem;
+  display:flex;flex-direction:column;align-items:center;gap:.35rem;
 }
-
-/* Top bar */
-.flight-bar{
-  position:absolute;top:0;left:0;right:0;z-index:500;
-  background:linear-gradient(180deg,rgba(15,25,35,.95) 0%,rgba(15,25,35,.0) 100%);
-  padding:1rem 1.5rem 2.5rem;
-  display:flex;flex-direction:column;align-items:center;gap:.3rem;
-  pointer-events:none;
-}
-.flight-label{
-  font-family:'Montserrat',sans-serif;
-  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);
-}
+.flight-label{font-family:'Montserrat',sans-serif;font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);}
 .flight-cities{
-  font-family:'Sacramento',cursive;
-  font-size:clamp(1.8rem,7vw,3rem);color:#ffd6e7;
-  text-shadow:0 2px 16px rgba(255,150,180,.4);
+  font-family:'Sacramento',cursive;font-size:clamp(1.8rem,7vw,3rem);
+  background:linear-gradient(90deg,#ffb3c6,#ff8fab,#ff4d6d);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 2px 12px rgba(255,77,109,.3));
 }
 
-/* Bottom status */
-.flight-status-bar{
-  position:absolute;bottom:0;left:0;right:0;z-index:500;
-  background:linear-gradient(0deg,rgba(15,25,35,.95) 0%,rgba(15,25,35,.0) 100%);
-  padding:2rem 1.5rem 1.2rem;
-  display:flex;flex-direction:column;align-items:center;gap:.4rem;
-  pointer-events:none;
+/* Phase indicator */
+.phase-indicator{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:500;pointer-events:none;
+  font-family:'Sacramento',cursive;font-size:clamp(2rem,8vw,3.5rem);
+  color:white;text-shadow:0 0 20px rgba(255,100,150,.6);
+  opacity:0;transition:opacity .5s ease;text-align:center;
 }
-.progress-track{
-  width:min(280px,80vw);height:3px;
-  background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;
+.phase-indicator.show{opacity:1;}
+
+/* Bottom bar */
+.map-bottom-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:500;pointer-events:none;
+  background:linear-gradient(0deg,rgba(10,15,25,.9) 0%,transparent 100%);
+  padding:3rem 2rem 1.5rem;
+  display:flex;flex-direction:column;align-items:center;gap:.7rem;
 }
-.progress-fill{
-  height:100%;background:linear-gradient(90deg,#e8839a,#ff9eb5);
-  border-radius:99px;width:0%;transition:width .1s linear;
-}
-#flight-status-text{
-  font-family:'Montserrat',sans-serif;
-  font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(255,255,255,.55);
+.prog-wrap{width:min(300px,78vw);display:flex;flex-direction:column;gap:.4rem;}
+.prog-track{height:2px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;width:0%;
+  background:linear-gradient(90deg,#c9184a,#ff4d6d,#ff8fab);
+  transition:width .12s linear;box-shadow:0 0 8px rgba(255,77,109,.5);}
+#status-txt{
+  font-family:'Montserrat',sans-serif;font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;
 }
 
-/* TELEGRAM PLANE */
-#tg-plane{
+/* PLANE */
+#plane-el{
   position:absolute;z-index:600;pointer-events:none;
-  transform:translate(-50%,-50%);
-  will-change:transform,left,top;
+  transform:translate(-50%,-50%);will-change:left,top,transform;
+  transition:opacity .3s;
 }
-.tg-plane-svg{
-  width:clamp(36px,8vw,52px);
-  filter:drop-shadow(0 4px 16px rgba(255,180,200,.7));
+.plane-svg{width:clamp(40px,9vw,58px);height:auto;display:block;}
+
+/* City pin */
+.cpin{
+  background:rgba(255,77,109,.9);
+  border:1.5px solid rgba(255,255,255,.3);
+  border-radius:20px;padding:.22rem .65rem;
+  font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:400;color:white;
+  white-space:nowrap;box-shadow:0 2px 16px rgba(255,77,109,.5);
+  backdrop-filter:blur(4px);
 }
 
-/* TRAIL */
-.flight-trail{position:absolute;inset:0;z-index:300;pointer-events:none;}
-
-/* ══ S3: RAIN + LOVE ══ */
+/* ══════════════════════
+   S3 — RAIN + LOVE
+══════════════════════ */
 #s3{
-  background:linear-gradient(145deg,#fff0f4 0%,#fde4ec 55%,#f8cdd8 100%);
+  background:linear-gradient(145deg,#1a0810 0%,#2d1020 50%,#1a0810 100%);
   display:flex;align-items:center;justify-content:center;
 }
-#rain-canvas{position:absolute;inset:0;pointer-events:none;z-index:0;}
-.s3-wrap{
+#rain-c{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.s3-inner{
   position:relative;z-index:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1.8rem;padding:2rem 1.5rem;width:100%;min-height:100vh;
+  gap:2rem;padding:2rem 1.5rem;width:100%;min-height:100vh;
 }
 
+/* Love card */
 .love-card{
-  background:rgba(255,255,255,.75);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(232,131,154,.25);
-  border-radius:24px;
-  padding:2rem 2rem;
-  box-shadow:0 8px 40px rgba(184,77,106,.12);
-  cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,77,109,.2);
+  border-radius:28px;padding:2.2rem 2rem;
+  max-width:min(440px,90vw);width:100%;
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:0 8px 48px rgba(255,77,109,.1),inset 0 1px 0 rgba(255,255,255,.08);
   transition:transform .12s,box-shadow .12s;
-  max-width:min(480px,90vw);
-  width:100%;
-  position:relative;overflow:hidden;
 }
 .love-card::before{
-  content:'"';
-  position:absolute;top:-1rem;left:1rem;
-  font-family:'Sacramento',cursive;font-size:7rem;
-  color:rgba(232,131,154,.1);line-height:1;pointer-events:none;
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,77,109,.08) 0%,transparent 70%);
+  pointer-events:none;
 }
-.love-card:active{transform:scale(.97);box-shadow:0 4px 20px rgba(184,77,106,.1);}
+.love-card:active{transform:scale(.97);box-shadow:0 4px 24px rgba(255,77,109,.08);}
 
 .love-text{
   font-family:'Sacramento',cursive;
-  font-size:clamp(2rem,8vw,3.2rem);
-  color:#b84d6a;
+  font-size:clamp(2.2rem,9vw,3.6rem);
+  background:linear-gradient(135deg,#ff8fab,#ff4d6d,#c9184a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   text-align:center;line-height:1.35;
-  min-height:2.8em;
-  display:flex;align-items:center;justify-content:center;
-  transition:opacity .2s;
+  min-height:2.7em;display:flex;align-items:center;justify-content:center;
+  transition:opacity .18s;filter:drop-shadow(0 0 20px rgba(255,77,109,.3));
 }
 
-.tap-love-hint{
-  font-family:'Montserrat',sans-serif;
-  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
-  color:#c45c78;opacity:.7;
+.tap-love{
+  font-family:'Montserrat',sans-serif;font-weight:300;
+  font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:#ff8fab;
   animation:breathe 2.2s ease-in-out infinite;
 }
 
+/* Music pill */
 .music-pill{
-  display:flex;align-items:center;gap:.9rem;
-  background:rgba(255,255,255,.7);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  border:1px solid rgba(232,131,154,.2);
-  border-radius:50px;padding:.6rem 1.2rem .6rem .6rem;
-  box-shadow:0 4px 16px rgba(184,77,106,.1);
+  display:flex;align-items:center;gap:1rem;
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,77,109,.15);
+  border-radius:50px;padding:.65rem 1.4rem .65rem .65rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
 }
-.music-btn{
-  background:linear-gradient(135deg,#e8839a,#c45c78);
-  border:none;color:white;width:42px;height:42px;border-radius:50%;
+.mbtn{
+  background:linear-gradient(135deg,#ff4d6d,#c9184a);
+  border:none;color:white;width:44px;height:44px;border-radius:50%;
   font-size:1.1rem;cursor:pointer;
-  box-shadow:0 3px 14px rgba(196,92,120,.4);
+  box-shadow:0 3px 16px rgba(255,77,109,.4);
   display:flex;align-items:center;justify-content:center;
-  transition:transform .15s;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s,box-shadow .15s;
 }
-.music-btn:active{transform:scale(.9);}
-.music-info{display:flex;flex-direction:column;}
-.music-track{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:400;color:#b84d6a;letter-spacing:.05em;}
-.music-artist{font-family:'Montserrat',sans-serif;font-size:.55rem;color:#c8708a;opacity:.7;letter-spacing:.05em;}
+.mbtn:active{transform:scale(.9);}
+.mbtn.playing{box-shadow:0 0 0 3px rgba(255,77,109,.3),0 3px 16px rgba(255,77,109,.4);}
+.minfo{display:flex;flex-direction:column;gap:.1rem;}
+.mtrack{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:500;color:#ff8fab;letter-spacing:.04em;}
+.martist{font-family:'Montserrat',sans-serif;font-size:.55rem;font-weight:300;color:rgba(255,139,171,.55);letter-spacing:.04em;}
 
 /* FLOATERS */
-.float-el{position:fixed;pointer-events:none;z-index:9999;
-  animation:floatUp 2.8s cubic-bezier(.2,1,.3,1) forwards;}
+.floater{position:fixed;pointer-events:none;z-index:9999;animation:floatUp 3s cubic-bezier(.2,1,.3,1) forwards;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-240px) scale(.3) rotate(15deg)}}
 
-/* BURST */
-.burst-el{position:fixed;pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  animation:burstGo 1.4s cubic-bezier(.2,1,.3,1) forwards;}
-
-/* CITY PIN */
-.city-pin{
-  background:rgba(255,255,255,.95);
-  border:2px solid #e8839a;
-  border-radius:20px;padding:.25rem .6rem;
-  font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:400;
-  color:#b84d6a;white-space:nowrap;
-  box-shadow:0 2px 12px rgba(184,77,106,.3);
-}
-
-/* ── KEYFRAMES ── */
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes heartPulse{0%,100%{transform:scale(1)}35%{transform:scale(1.1)}65%{transform:scale(1.05)}}
-@keyframes ripple{0%{transform:scale(.8);opacity:.7}100%{transform:scale(2);opacity:0}}
-@keyframes breathe{0%,100%{opacity:.4}50%{opacity:1}}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1) rotate(0deg)}
-  100%{opacity:0;transform:translateY(-220px) scale(.4) rotate(20deg)}}
-@keyframes burstGo{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
-  30%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(3)}
-}
-@keyframes planeFly{0%{filter:drop-shadow(0 4px 16px rgba(255,180,200,.7))}
-  50%{filter:drop-shadow(0 6px 24px rgba(255,180,200,1))}
-  100%{filter:drop-shadow(0 4px 16px rgba(255,180,200,.7))}}
+.burst-el{position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:burstGo 1.5s cubic-bezier(.2,1,.3,1) forwards;}
+@keyframes burstGo{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.8)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.5)}}
 </style>
 </head>
 <body>
 
-<!-- ══ SCREEN 1 ══ -->
+<!-- ══ S1: HEART ══ -->
 <div class="screen active" id="s1">
-  <canvas id="petal-canvas"></canvas>
-  <div class="s1-wrap">
-    <div>
-      <div class="arisha-title">Аришенька</div>
-      <div class="subtitle">моё солнышко</div>
-    </div>
-
-    <div class="heart-wrap">
-      <div class="heart-ripple"></div>
-      <div class="heart-ripple"></div>
-      <div class="heart-ripple"></div>
-      <button class="heart-svg-btn" id="heart-btn" onclick="startFlight()">
-        <svg class="heart-svg" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+  <canvas id="petal-c"></canvas>
+  <div class="glow-orb"></div>
+  <div class="s1-inner">
+    <div class="arisha-title">Аришенька</div>
+    <div class="heart-wrap" onclick="startFlight()">
+      <div class="ripple"></div>
+      <div class="ripple"></div>
+      <div class="ripple"></div>
+      <button class="heart-btn" aria-label="Открыть валентинку">
+        <svg class="heart-svg" viewBox="0 0 100 92" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <radialGradient id="hg" cx="50%" cy="35%" r="60%">
+            <radialGradient id="hg" cx="50%" cy="30%" r="70%">
               <stop offset="0%" stop-color="#ff8fab"/>
-              <stop offset="60%" stop-color="#e8839a"/>
-              <stop offset="100%" stop-color="#c45c78"/>
+              <stop offset="45%" stop-color="#ff4d6d"/>
+              <stop offset="100%" stop-color="#a4133c"/>
             </radialGradient>
-            <filter id="hglow">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <radialGradient id="hg2" cx="50%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#ffb3c6" stop-opacity=".5"/>
+              <stop offset="100%" stop-color="#ff4d6d" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="hf" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+              <feFlood flood-color="#ff4d6d" flood-opacity=".4" result="color"/>
+              <feComposite in="color" in2="blur" operator="in" result="shadow"/>
+              <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
-          <path fill="url(#hg)" filter="url(#hglow)"
-            d="M50 85 C50 85 5 55 5 28 C5 14 16 5 28 5 C36 5 43 9 50 17 C57 9 64 5 72 5 C84 5 95 14 95 28 C95 55 50 85 50 85Z"/>
+          <path fill="url(#hg)" filter="url(#hf)"
+            d="M50 88 C50 88 4 57 4 27 C4 12 15 3 28 3 C37 3 44 8 50 17 C56 8 63 3 72 3 C85 3 96 12 96 27 C96 57 50 88 50 88Z"/>
+          <path fill="url(#hg2)"
+            d="M50 88 C50 88 4 57 4 27 C4 12 15 3 28 3 C37 3 44 8 50 17 C56 8 63 3 72 3 C85 3 96 12 96 27 C96 57 50 88 50 88Z"/>
           <!-- shine -->
-          <ellipse cx="35" cy="22" rx="10" ry="6" fill="rgba(255,255,255,.35)" transform="rotate(-30,35,22)"/>
+          <ellipse cx="34" cy="20" rx="12" ry="7" fill="rgba(255,255,255,.3)" transform="rotate(-30,34,20)"/>
+          <ellipse cx="30" cy="14" rx="5" ry="3" fill="rgba(255,255,255,.5)" transform="rotate(-30,30,14)"/>
         </svg>
       </button>
     </div>
-
     <div class="tap-hint">нажми на сердечко</div>
   </div>
 </div>
 
-<!-- ══ SCREEN 2: MAP ══ -->
+<!-- ══ S2: MAP ══ -->
 <div class="screen" id="s2">
   <div id="map"></div>
 
-  <div class="flight-bar">
+  <div class="map-top-bar">
     <div class="flight-label">маршрут любви</div>
     <div class="flight-cities">Santa Severa ✈ Павлоград</div>
   </div>
 
-  <!-- Telegram-style plane SVG -->
-  <div id="tg-plane">
-    <svg class="tg-plane-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <div class="phase-indicator" id="phase-ind"></div>
+
+  <!-- Plane -->
+  <div id="plane-el">
+    <svg class="plane-svg" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="100%" stop-color="#f0c8d8"/>
+          <stop offset="100%" stop-color="#ffd6e7"/>
         </linearGradient>
         <filter id="pglow">
-          <feGaussianBlur stdDeviation="1.5" result="b"/>
+          <feGaussianBlur stdDeviation="2" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-      <!-- Main fuselage -->
+      <!-- fuselage -->
       <path fill="url(#pg)" filter="url(#pglow)"
-        d="M8 32 L52 20 C56 19 58 21 57 25 L48 38 C47 40 44 41 42 40 L30 35 L20 46 L16 44 L22 32 L8 32Z"/>
-      <!-- Wing -->
-      <path fill="rgba(255,255,255,.85)"
-        d="M20 32 L38 26 L42 32 L28 36Z"/>
-      <!-- Tail -->
-      <path fill="rgba(255,255,255,.7)"
-        d="M8 32 L14 28 L18 32 L14 36Z"/>
-      <!-- Window -->
-      <circle cx="40" cy="30" r="2.5" fill="rgba(255,182,200,.9)"/>
-      <!-- Engine glow -->
-      <ellipse cx="44" cy="36" rx="4" ry="2" fill="rgba(255,150,180,.4)"/>
+        d="M10 36 L58 22 C63 20 66 23 64 28 L54 43 C52 46 49 47 46 45 L33 39 L22 52 L17 50 L24 36 Z"/>
+      <!-- main wing -->
+      <path fill="rgba(255,230,238,.9)"
+        d="M22 36 L42 29 L47 36 L32 41 Z"/>
+      <!-- tail wing -->
+      <path fill="rgba(255,200,220,.8)"
+        d="M10 36 L17 31 L21 36 L17 41 Z"/>
+      <!-- small tail fin -->
+      <path fill="rgba(255,210,225,.7)"
+        d="M12 36 L18 28 L21 30 L17 36Z"/>
+      <!-- window -->
+      <circle cx="44" cy="34" r="3" fill="rgba(255,180,210,.95)"/>
+      <circle cx="44" cy="34" r="1.5" fill="rgba(255,255,255,.7)"/>
+      <!-- engine -->
+      <ellipse cx="48" cy="41" rx="5" ry="2.2" fill="rgba(255,150,180,.45)"/>
+      <!-- exhaust glow -->
+      <ellipse cx="53" cy="41" rx="3" ry="1.2" fill="rgba(255,180,200,.25)"/>
     </svg>
   </div>
 
-  <div class="flight-status-bar">
-    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
-    <div id="flight-status-text">готовимся к взлёту...</div>
+  <div class="map-bottom-bar">
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+    </div>
+    <div id="status-txt">готовимся к взлёту...</div>
   </div>
 </div>
 
-<!-- ══ SCREEN 3 ══ -->
+<!-- ══ S3: HEARTS + LOVE ══ -->
 <div class="screen" id="s3">
-  <canvas id="rain-canvas"></canvas>
-  <div class="s3-wrap">
+  <canvas id="rain-c"></canvas>
+  <div class="s3-inner">
 
     <div class="love-card" id="love-card" onclick="addLove()">
-      <div class="love-text" id="love-text">я тебя люблю ❤️</div>
+      <div class="love-text" id="love-txt">я тебя люблю ❤️</div>
     </div>
 
-    <div class="tap-love-hint">нажимай — добавляй любви</div>
+    <div class="tap-love">нажимай — добавляй любви</div>
 
     <div class="music-pill">
-      <button class="music-btn" id="music-btn" onclick="toggleMusic()">🎵</button>
-      <div class="music-info">
-        <span class="music-track">Can't Take My Eyes Off You</span>
-        <span class="music-artist">Frankie Valli</span>
+      <button class="mbtn" id="mbtn" onclick="toggleMusic()">🎵</button>
+      <div class="minfo">
+        <span class="mtrack">Can't Take My Eyes Off You</span>
+        <span class="martist">Frankie Valli</span>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- SOUNDCLOUD -->
-<iframe id="sc-iframe"
-  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frankievalli/cant-take-my-eyes-off-you&color=%23e8839a&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_teaser=false"
+<!-- SOUNDCLOUD — official Frankie Valli channel -->
+<iframe id="sc"
+  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frankievallithefourseasons/cant-take-my-eyes-off-you&color=%23ff4d6d&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_teaser=false&buying=false&sharing=false&download=false"
   style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;"
   allow="autoplay">
 </iframe>
 
 <script>
-// ════════════════════════════════════════
+'use strict';
+
+// ══════════════════════════════════
 // PETALS
-// ════════════════════════════════════════
-const pc=document.getElementById('petal-canvas');
+// ══════════════════════════════════
+const pc=document.getElementById('petal-c');
 const px=pc.getContext('2d');
-function resPC(){pc.width=innerWidth;pc.height=innerHeight;}
-resPC();addEventListener('resize',resPC);
-const petals=[];
-function mkPetal(){
-  return{x:Math.random()*pc.width,y:-20,
-    sz:6+Math.random()*14,sy:.6+Math.random()*1.4,sx:(Math.random()-.5)*.9,
-    rot:Math.random()*Math.PI*2,rs:(Math.random()-.5)*.035,op:.3+Math.random()*.55,
-    col:['#f7c5d0','#e8839a','#fce4ec','#f9aec0','#fddde6','#ffb3c6'][0|Math.random()*6]};
-}
-for(let i=0;i<32;i++){const p=mkPetal();p.y=Math.random()*innerHeight;petals.push(p);}
-(function animPetals(){
+function rsPC(){pc.width=innerWidth;pc.height=innerHeight;}
+rsPC();addEventListener('resize',rsPC);
+const ptls=[];
+function mkPt(){return{x:Math.random()*pc.width,y:-20,sz:5+Math.random()*13,
+  sy:.5+Math.random()*1.3,sx:(Math.random()-.5)*.9,
+  rot:Math.random()*Math.PI*2,rs:(Math.random()-.5)*.04,
+  op:.2+Math.random()*.5,
+  col:['#ff8fab','#ffb3c6','#ff4d6d','#ffc2d1','#ff85a1'][0|Math.random()*5]};}
+for(let i=0;i<30;i++){const p=mkPt();p.y=Math.random()*innerHeight;ptls.push(p);}
+(function aPet(){
   px.clearRect(0,0,pc.width,pc.height);
-  petals.forEach(p=>{
-    p.y+=p.sy;p.x+=p.sx+Math.sin(p.y*.018)*.6;p.rot+=p.rs;
-    if(p.y>pc.height+20)Object.assign(p,mkPetal());
+  ptls.forEach(p=>{
+    p.y+=p.sy;p.x+=p.sx+Math.sin(p.y*.018)*.55;p.rot+=p.rs;
+    if(p.y>pc.height+20)Object.assign(p,mkPt());
     px.save();px.translate(p.x,p.y);px.rotate(p.rot);
     px.globalAlpha=p.op;px.fillStyle=p.col;
     px.beginPath();px.ellipse(0,0,p.sz/2.2,p.sz,0,0,Math.PI*2);
-    px.fill();px.restore();
-  });
-  requestAnimationFrame(animPetals);
+    px.fill();px.restore();});
+  requestAnimationFrame(aPet);
 })();
 
-// ════════════════════════════════════════
-// SCREENS
-// ════════════════════════════════════════
+// ══════════════════════════════════
+// SCREEN MANAGER
+// ══════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// ════════════════════════════════════════
+// ══════════════════════════════════
 // FLOATERS
-// ════════════════════════════════════════
+// ══════════════════════════════════
+const EM=['❤️','🩷','💕','💗','🌸','✨','💖','💝','🫀'];
 function spawnF(x,y,n,big){
-  const em=['❤️','🩷','💕','💗','🌸','✨','💖','💝'];
   for(let i=0;i<n;i++){
     setTimeout(()=>{
       const el=document.createElement('div');
-      el.className='float-el';
-      const sz=big?(1.5+Math.random()*2):(.7+Math.random()*1.3);
-      el.textContent=em[0|Math.random()*em.length];
-      el.style.cssText=`left:${x+(Math.random()-.5)*80}px;top:${y+(Math.random()-.5)*40}px;font-size:${sz}rem;`;
+      el.className='floater';
+      const sz=big?(1.8+Math.random()*2.2):(.7+Math.random()*1.2);
+      el.textContent=EM[0|Math.random()*EM.length];
+      el.style.cssText=`left:${x+(Math.random()-.5)*90}px;top:${y+(Math.random()-.5)*50}px;font-size:${sz}rem`;
       document.body.appendChild(el);
-      setTimeout(()=>el.remove(),2900);
-    },i*55);
+      setTimeout(()=>el.remove(),3100);
+    },i*50);
   }
 }
+function burst(x,y){
+  const el=document.createElement('div');
+  el.className='burst-el';el.textContent='💖';
+  el.style.cssText=`left:${x}px;top:${y}px;font-size:2.5rem`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1600);
+}
 
-// ════════════════════════════════════════
-// MAP & FLIGHT
-// ════════════════════════════════════════
-// Santa Severa, Italy
-const FROM_LAT=42.044, FROM_LNG=11.951, FROM_NAME='Santa Severa 🇮🇹';
-// Pavlograd, Ukraine
-const TO_LAT=48.537,   TO_LNG=35.870,   TO_NAME='Павлоград 🇺🇦';
+// ══════════════════════════════════
+// MAP & CINEMATIC FLIGHT
+// ══════════════════════════════════
+const FROM={lat:42.044,lng:11.951,name:'Santa Severa 🇮🇹'};
+const TO  ={lat:48.537,lng:35.870,name:'Павлоград 🇺🇦'};
 
-let map=null, planeEl=null, trailLine=null;
-let flightRaf=null, flightT=0;
-let trailLatLngs=[];
-let mapInited=false;
+let map=null,trailPoly=null,planeEl=null;
+let rafId=null,flightPhase='idle';
+let trailPts=[];
+let mapReady=false;
+
+// Cinematic phases:
+// 0. zoom in Santa Severa (zoom 10→12, 2s)
+// 1. zoom out to see both cities (zoom 12→5, 2s)
+// 2. fly (animate plane + trail, ~18s)
+// 3. zoom in Pavlograd (zoom 5→13, 2.5s)
+// 4. landing burst → go to s3
 
 function initMap(){
-  if(mapInited)return;
-  mapInited=true;
+  if(mapReady)return;
+  mapReady=true;
 
   map=L.map('map',{
     zoomControl:false,attributionControl:false,
-    dragging:false,scrollWheelZoom:false,doubleClickZoom:false,
-    touchZoom:false,keyboard:false,
+    dragging:false,scrollWheelZoom:false,
+    doubleClickZoom:false,touchZoom:false,keyboard:false,
+    zoomAnimation:true,fadeAnimation:true,
   });
 
-  // Carto Dark (no labels) — sleek dark map like Telegram
+  // Dark Carto — no labels for clean look
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
-    subdomains:'abcd',maxZoom:19
+    subdomains:'abcd',maxZoom:19,
   }).addTo(map);
 
-  // Pink city labels only
+  // Subtle label overlay
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',{
-    subdomains:'abcd',maxZoom:19,opacity:.5
+    subdomains:'abcd',maxZoom:19,opacity:.4,
   }).addTo(map);
 
-  // Fit view: center between cities, zoom out enough
-  const bounds=L.latLngBounds([FROM_LAT,FROM_LNG],[TO_LAT,TO_LNG]);
-  map.fitBounds(bounds,{padding:[80,80]});
+  // Pink glow tiles to tint the map
+  map.getContainer().style.filter='hue-rotate(300deg) saturate(1.3) brightness(0.9)';
 
-  // City pins
-  const pinIcon=(label)=>L.divIcon({
-    className:'',
-    html:`<div class="city-pin">${label}</div>`,
-    iconAnchor:[0,10],
-  });
-  L.marker([FROM_LAT,FROM_LNG],{icon:pinIcon(FROM_NAME)}).addTo(map);
-  L.marker([TO_LAT,TO_LNG],  {icon:pinIcon(TO_NAME)}).addTo(map);
+  // Trail line
+  trailPoly=L.polyline([],{color:'#ff8fab',weight:2.5,opacity:.75,dashArray:'7 5'}).addTo(map);
 
-  // Dotted trail line (will be updated)
-  trailLine=L.polyline([],{
-    color:'#ff9eb5',weight:2.5,opacity:.7,
-    dashArray:'6 5'
-  }).addTo(map);
+  // City markers
+  const pin=label=>L.divIcon({className:'',html:`<div class="cpin">${label}</div>`,iconAnchor:[0,12]});
+  L.marker([FROM.lat,FROM.lng],{icon:pin(FROM.name)}).addTo(map);
+  L.marker([TO.lat,TO.lng],  {icon:pin(TO.name)}).addTo(map);
 
-  planeEl=document.getElementById('tg-plane');
+  planeEl=document.getElementById('plane-el');
 }
 
-// Great-circle interpolation
-function interpolate(t){
-  const lat=FROM_LAT+(TO_LAT-FROM_LAT)*t;
-  const lng=FROM_LNG+(TO_LNG-FROM_LNG)*t;
-  // arc: max altitude at t=0.5
-  const arcLat=lat + Math.sin(t*Math.PI)*6;
-  return [arcLat,lng];
+// Great-circle arc interpolation (t: 0→1)
+function arcPoint(t){
+  const lat=FROM.lat+(TO.lat-FROM.lat)*t;
+  const lng=FROM.lng+(TO.lng-FROM.lng)*t;
+  const arc=Math.sin(t*Math.PI)*7; // arc height in degrees
+  return[lat+arc, lng];
 }
 
 function eio(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+function showPhaseText(txt,dur){
+  const el=document.getElementById('phase-ind');
+  el.textContent=txt;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),dur||1800);
+}
+
+// FLIGHT STATE
+let ft=0; // 0→1 flight progress
+let lastTs=0;
+const FLIGHT_DURATION=16000; // ms total flight
 
 const STATUSES=[
-  [0,'готовимся к взлёту... 🛫'],
-  [.1,'взлетаем! 🛫'],
-  [.25,'пролетаем над Апеннинами 🏔️'],
-  [.45,'Адриатическое море внизу 🌊'],
-  [.6,'входим в воздушное пространство Украины 💙💛'],
-  [.8,'снижаемся... Павлоград уже близко 🌸'],
-  [.95,'приземляемся... 💕'],
+  [0,'взлетаем из Santa Severa... 🛫'],
+  [.15,'Апеннинские горы внизу ⛰️'],
+  [.3,'Адриатическое море 🌊'],
+  [.48,'пролетаем над Балканами...'],
+  [.62,'входим в Украину 💙💛'],
+  [.78,'Днепропетровская область 🌻'],
+  [.9,'Павлоград всё ближе... 🌸'],
+  [.97,'снижаемся... 💕'],
 ];
-
 function getStatus(t){
   let s=STATUSES[0][1];
-  for(const [thresh,txt] of STATUSES) if(t>=thresh) s=txt;
+  for(const[th,tx]of STATUSES)if(t>=th)s=tx;
   return s;
 }
 
-function doFlight(){
-  if(flightT>1){
-    cancelAnimationFrame(flightRaf);
-    document.getElementById('flight-status-text').textContent='приземлились! 💕';
-    document.getElementById('prog-fill').style.width='100%';
-    setTimeout(()=>{
-      // BIG BURST
-      const b=document.createElement('div');
-      b.className='burst-el';b.textContent='💖';b.style.left='50%';b.style.top='50%';
-      document.body.appendChild(b);
-      setTimeout(()=>b.remove(),1500);
-      spawnF(innerWidth/2,innerHeight/2,22,true);
-      setTimeout(()=>showScreen('s3'),2000);
-    },400);
-    return;
-  }
+// ── CINEMATIC SEQUENCE ──
+async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-  const t=eio(Math.min(flightT,1));
-  const [lat,lng]=interpolate(t);
-  const pt=map.latLngToContainerPoint([lat,lng]);
+async function runCinematic(){
+  initMap();
+  await sleep(100);
 
-  // Update plane position
-  planeEl.style.left=pt.x+'px';
-  planeEl.style.top=pt.y+'px';
+  // Phase 0: zoom in to Santa Severa
+  showPhaseText('Santa Severa, Italia 🇮🇹');
+  map.setView([FROM.lat,FROM.lng],12,{animate:false});
+  await sleep(2200);
 
-  // Plane rotation: angle to next point
-  if(flightT<.98){
-    const t2=Math.min(flightT+.01,1);
-    const [lat2,lng2]=interpolate(eio(t2));
-    const pt2=map.latLngToContainerPoint([lat2,lng2]);
-    const angle=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*(180/Math.PI);
-    planeEl.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`;
-  }
+  // Phase 1: zoom out to see full route
+  map.flyToBounds(
+    L.latLngBounds([FROM.lat,FROM.lng],[TO.lat,TO.lng]),
+    {padding:[90,90],duration:2,easeLinearity:.4}
+  );
+  await sleep(2400);
 
-  // Trail
-  trailLatLngs.push([lat,lng]);
-  trailLine.setLatLngs(trailLatLngs);
+  // Phase 2: fly!
+  planeEl.style.opacity='1';
+  ft=0;lastTs=performance.now();
+  document.getElementById('status-txt').textContent=STATUSES[0][1];
 
-  // Progress
-  document.getElementById('prog-fill').style.width=(t*100)+'%';
-  document.getElementById('flight-status-text').textContent=getStatus(t);
+  await new Promise(resolve=>{
+    function flyFrame(ts){
+      const dt=ts-lastTs;lastTs=ts;
+      ft=clamp(ft+dt/FLIGHT_DURATION,0,1);
+      const t=eio(ft);
 
-  flightT+=.0025;
-  flightRaf=requestAnimationFrame(doFlight);
-}
+      const [lat,lng]=arcPoint(t);
+      const pt=map.latLngToContainerPoint([lat,lng]);
 
-let prevT=0;
-function animSmooth(ts){
-  const dt=Math.min((ts-prevT)/16,3);
-  prevT=ts;
-  // handled by doFlight
+      planeEl.style.left=pt.x+'px';
+      planeEl.style.top=pt.y+'px';
+
+      // rotation
+      if(ft<.98){
+        const t2=clamp(ft+.012,0,1);
+        const [la2,ln2]=arcPoint(eio(t2));
+        const pt2=map.latLngToContainerPoint([la2,ln2]);
+        const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*(180/Math.PI);
+        planeEl.style.transform=`translate(-50%,-50%) rotate(${ang}deg)`;
+      }
+
+      // trail
+      trailPts.push([lat,lng]);
+      if(trailPts.length%2===0) trailPoly.setLatLngs(trailPts);
+
+      // progress
+      document.getElementById('prog').style.width=(t*100)+'%';
+      document.getElementById('status-txt').textContent=getStatus(t);
+
+      if(ft>=1){resolve();return;}
+      rafId=requestAnimationFrame(flyFrame);
+    }
+    rafId=requestAnimationFrame(flyFrame);
+  });
+
+  // Phase 3: arrived — zoom into Pavlograd
+  document.getElementById('status-txt').textContent='приземлились в Павлограде! 💕';
+  document.getElementById('prog').style.width='100%';
+  showPhaseText('Павлоград, Україна 🇺🇦 💕');
+
+  map.flyTo([TO.lat,TO.lng],13,{duration:2.5,easeLinearity:.3});
+  await sleep(1500);
+
+  // Phase 4: burst & transition
+  burst(innerWidth/2,innerHeight/2);
+  spawnF(innerWidth/2,innerHeight/2,25,true);
+  await sleep(1800);
+  showScreen('s3');
 }
 
 function startFlight(){
   const hb=document.getElementById('heart-btn').getBoundingClientRect();
   spawnF(hb.left+hb.width/2,hb.top+hb.height/2,10);
-
   showScreen('s2');
-  initMap();
-
-  trailLatLngs=[];flightT=0;
-  trailLine&&trailLine.setLatLngs([]);
-  document.getElementById('prog-fill').style.width='0%';
-
-  // Place plane at start
-  setTimeout(()=>{
-    const pt=map.latLngToContainerPoint([FROM_LAT,FROM_LNG]);
-    planeEl.style.left=pt.x+'px';
-    planeEl.style.top=pt.y+'px';
-    planeEl.style.transform='translate(-50%,-50%) rotate(0deg)';
-    planeEl.style.opacity='1';
-    setTimeout(()=>{ prevT=performance.now(); doFlight(); },600);
-  },300);
+  runCinematic();
 }
 
-// ════════════════════════════════════════
-// HEART RAIN
-// ════════════════════════════════════════
-const rc=document.getElementById('rain-canvas');
+// ══════════════════════════════════
+// HEARTS RAIN (s3)
+// ══════════════════════════════════
+const rc=document.getElementById('rain-c');
 const rx=rc.getContext('2d');
 let rainOn=false,rain=[];
-function resRC(){rc.width=innerWidth;rc.height=innerHeight;}
-resRC();addEventListener('resize',resRC);
+function rsRC(){rc.width=innerWidth;rc.height=innerHeight;}
+rsRC();addEventListener('resize',rsRC);
 
-function mkRain(){
-  return{
-    x:Math.random()*rc.width,y:-35,
-    sz:.8+Math.random()*1.6,speed:1.6+Math.random()*2.6,
-    wb:Math.random()*Math.PI*2,ws:.016+Math.random()*.024,
-    op:.55+Math.random()*.4,
-    em:['❤️','💕','💗','🩷','💖','💝'][0|Math.random()*6]
-  };
-}
+function mkR(){return{
+  x:Math.random()*rc.width,y:-35,
+  sz:.8+Math.random()*1.7,speed:1.4+Math.random()*2.8,
+  wb:Math.random()*Math.PI*2,ws:.014+Math.random()*.026,
+  op:.5+Math.random()*.45,
+  em:EM[0|Math.random()*EM.length]
+};}
 
-let rainSpawnCount=0;
+let rSpawn=0;
 function spawnRain(){
-  rain.push(mkRain());
-  rainSpawnCount++;
-  const delay=rainSpawnCount<60?65:110;
-  if(rainOn)setTimeout(spawnRain,delay);
+  rain.push(mkR());rSpawn++;
+  if(rainOn)setTimeout(spawnRain,rSpawn<70?60:105);
 }
 
-(function animRain(){
+(function aRain(){
   if(rainOn){
     rx.clearRect(0,0,rc.width,rc.height);
     rain.forEach(h=>{
-      h.y+=h.speed;h.wb+=h.ws;h.x+=Math.sin(h.wb)*.7;
+      h.y+=h.speed;h.wb+=h.ws;h.x+=Math.sin(h.wb)*.65;
       rx.globalAlpha=h.op;
       rx.font=`${(h.sz*26)|0}px serif`;
       rx.fillText(h.em,h.x,h.y);
     });
     rx.globalAlpha=1;
-    rain=rain.filter(h=>h.y<rc.height+50);
+    rain=rain.filter(h=>h.y<rc.height+55);
   }
-  requestAnimationFrame(animRain);
+  requestAnimationFrame(aRain);
 })();
 
-const s3=document.getElementById('s3');
+const s3el=document.getElementById('s3');
 new MutationObserver(()=>{
-  if(s3.classList.contains('active')&&!rainOn){
-    rainOn=true;
-    rainSpawnCount=0;
-    spawnRain();
+  if(s3el.classList.contains('active')&&!rainOn){
+    rainOn=true;rSpawn=0;spawnRain();
   }
-}).observe(s3,{attributes:true,attributeFilter:['class']});
+}).observe(s3el,{attributes:true,attributeFilter:['class']});
 
-// ════════════════════════════════════════
+// ══════════════════════════════════
 // LOVE PHRASES
-// ════════════════════════════════════════
+// ══════════════════════════════════
 const phrases=[
   'я тебя люблю ❤️',
   'я тебя люблю безумно 💕',
@@ -633,31 +643,40 @@ let lIdx=0;
 
 function addLove(){
   lIdx=Math.min(lIdx+1,phrases.length-1);
-  const lt=document.getElementById('love-text');
+  const lt=document.getElementById('love-txt');
   lt.style.opacity='0';
-  setTimeout(()=>{
-    lt.innerHTML=phrases[lIdx].replace(/\n/g,'<br>');
-    lt.style.opacity='1';
-  },150);
+  setTimeout(()=>{lt.innerHTML=phrases[lIdx].replace(/\n/g,'<br>');lt.style.opacity='1';},160);
   const r=document.getElementById('love-card').getBoundingClientRect();
   spawnF(r.left+r.width/2,r.top+r.height/2,7);
 }
 
-// ════════════════════════════════════════
-// MUSIC
-// ════════════════════════════════════════
+// ══════════════════════════════════
+// MUSIC — official Frankie Valli SoundCloud
+// ══════════════════════════════════
 let playing=false,scW=null;
 window.addEventListener('load',()=>{
   try{
-    scW=SC.Widget(document.getElementById('sc-iframe'));
-    scW.bind(SC.Widget.Events.READY,()=>scW.setVolume(75));
-  }catch(e){}
+    scW=SC.Widget(document.getElementById('sc'));
+    scW.bind(SC.Widget.Events.READY,()=>{
+      scW.setVolume(80);
+      // seek to "I love you baby" part ~28s
+      scW.seekTo(28000);
+    });
+  }catch(e){console.warn('SC:',e);}
 });
+
 function toggleMusic(){
-  const btn=document.getElementById('music-btn');
-  if(!scW){return;}
-  if(playing){scW.pause();btn.textContent='🎵';playing=false;}
-  else{scW.play();btn.textContent='🎶';playing=true;}
+  const btn=document.getElementById('mbtn');
+  if(!scW)return;
+  if(playing){
+    scW.pause();
+    btn.textContent='🎵';btn.classList.remove('playing');
+    playing=false;
+  }else{
+    scW.play();
+    btn.textContent='🎶';btn.classList.add('playing');
+    playing=true;
+  }
 }
 </script>
 </body>
