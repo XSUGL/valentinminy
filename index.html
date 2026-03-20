@@ -339,13 +339,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action
   </div>
 </div>
 
-<!-- YouTube: Can't Take My Eyes Off You — Frankie Valli (I love you baby ~28s) -->
-<iframe id="yt"
-  src="https://www.youtube.com/embed/LDKe4PwZYQY?enablejsapi=1&autoplay=0&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0&rel=0&modestbranding=1"
-  style="position:fixed;bottom:-9999px;left:-9999px;width:2px;height:2px;opacity:0;"
-  allow="autoplay; encrypted-media"
-  frameborder="0">
-</iframe>
+
 
 <script>
 'use strict';
@@ -577,6 +571,7 @@ async function runCinematic(){
 function startFlight(){
   const hbEl=document.querySelector('.heart-btn');const hb=hbEl?hbEl.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
   spawnF(hb.left+hb.width/2,hb.top+hb.height/2,10);
+  startMusic(); // start music on user gesture
   showScreen('s2');
   runCinematic();
 }
@@ -651,25 +646,39 @@ function addLove(){
 }
 
 // ══════════════════════════════════
-// MUSIC — YouTube iframe postMessage API
+// MUSIC — HTML5 Audio (starts on heart click)
 // ══════════════════════════════════
 let playing=false;
 
-function ytCmd(cmd){
-  try{
-    const yt=document.getElementById('yt');
-    yt.contentWindow.postMessage(JSON.stringify({event:'command',func:cmd,args:[]}),'*');
-  }catch(e){}
+function startMusic(){
+  if(playing)return;
+  // Use YouTube iframe embed — safest cross-origin approach
+  // We create a hidden YT iframe dynamically after user gesture
+  const yt=document.createElement('iframe');
+  yt.id='yt-music';
+  yt.style.cssText='position:fixed;bottom:-9999px;left:-9999px;width:2px;height:2px;';
+  yt.allow='autoplay';
+  // Start at 28s = "I love you baby" part
+  yt.src='https://www.youtube.com/embed/LDKe4PwZYQY?autoplay=1&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0';
+  document.body.appendChild(yt);
+  playing=true;
+  const btn=document.getElementById('mbtn');
+  if(btn){btn.textContent='🎶';btn.classList.add('playing');}
 }
 
 function toggleMusic(){
   const btn=document.getElementById('mbtn');
+  const yt=document.getElementById('yt-music');
   if(playing){
-    ytCmd('pauseVideo');
+    if(yt)yt.src=''; // stop by clearing src
     btn.textContent='🎵';btn.classList.remove('playing');
     playing=false;
   }else{
-    ytCmd('playVideo');
+    if(yt){
+      yt.src='https://www.youtube.com/embed/LDKe4PwZYQY?autoplay=1&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0';
+    }else{
+      startMusic();return;
+    }
     btn.textContent='🎶';btn.classList.add('playing');
     playing=true;
   }
