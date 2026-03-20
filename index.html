@@ -646,41 +646,37 @@ function addLove(){
 }
 
 // ══════════════════════════════════
-// MUSIC — HTML5 Audio (starts on heart click)
+// MUSIC — HTML5 Audio from archive.org (direct MP3)
+// Starts on heart click (user gesture = autoplay allowed)
 // ══════════════════════════════════
 let playing=false;
+const audio=new Audio();
+audio.loop=true;
+audio.volume=0.8;
+audio.src='https://archive.org/download/frankie-valli-can-t-take-my-eyes-off-you-official-audio/Frankie%20Valli%20-%20Can%20t%20Take%20My%20Eyes%20Off%20You%20%28Official%20Audio%29.mp3';
+audio.preload='none';
 
 function startMusic(){
   if(playing)return;
-  // Use YouTube iframe embed — safest cross-origin approach
-  // We create a hidden YT iframe dynamically after user gesture
-  const yt=document.createElement('iframe');
-  yt.id='yt-music';
-  yt.style.cssText='position:fixed;bottom:-9999px;left:-9999px;width:2px;height:2px;';
-  yt.allow='autoplay';
-  // Start at 28s = "I love you baby" part
-  yt.src='https://www.youtube.com/embed/LDKe4PwZYQY?autoplay=1&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0';
-  document.body.appendChild(yt);
-  playing=true;
-  const btn=document.getElementById('mbtn');
-  if(btn){btn.textContent='🎶';btn.classList.add('playing');}
+  audio.currentTime=28; // jump to "I love you baby"
+  audio.play().then(()=>{
+    playing=true;
+    const btn=document.getElementById('mbtn');
+    if(btn){btn.textContent='🎶';btn.classList.add('playing');}
+  }).catch(e=>console.warn('audio play failed:',e));
 }
 
 function toggleMusic(){
   const btn=document.getElementById('mbtn');
-  const yt=document.getElementById('yt-music');
   if(playing){
-    if(yt)yt.src=''; // stop by clearing src
+    audio.pause();
     btn.textContent='🎵';btn.classList.remove('playing');
     playing=false;
   }else{
-    if(yt){
-      yt.src='https://www.youtube.com/embed/LDKe4PwZYQY?autoplay=1&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0';
-    }else{
-      startMusic();return;
-    }
-    btn.textContent='🎶';btn.classList.add('playing');
-    playing=true;
+    audio.play().then(()=>{
+      btn.textContent='🎶';btn.classList.add('playing');
+      playing=true;
+    }).catch(e=>console.warn('audio play failed:',e));
   }
 }
 </script>
