@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://w.soundcloud.com/player/api.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
@@ -340,11 +339,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0a;touch-action
   </div>
 </div>
 
-<!-- SOUNDCLOUD — official Frankie Valli channel -->
-<iframe id="sc"
-  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frankievallithefourseasons/cant-take-my-eyes-off-you&color=%23ff4d6d&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_teaser=false&buying=false&sharing=false&download=false"
-  style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;"
-  allow="autoplay">
+<!-- YouTube: Can't Take My Eyes Off You — Frankie Valli (I love you baby ~28s) -->
+<iframe id="yt"
+  src="https://www.youtube.com/embed/LDKe4PwZYQY?enablejsapi=1&autoplay=0&start=28&loop=1&playlist=LDKe4PwZYQY&controls=0&rel=0&modestbranding=1"
+  style="position:fixed;bottom:-9999px;left:-9999px;width:2px;height:2px;opacity:0;"
+  allow="autoplay; encrypted-media"
+  frameborder="0">
 </iframe>
 
 <script>
@@ -651,29 +651,25 @@ function addLove(){
 }
 
 // ══════════════════════════════════
-// MUSIC — official Frankie Valli SoundCloud
+// MUSIC — YouTube iframe postMessage API
 // ══════════════════════════════════
-let playing=false,scW=null;
-window.addEventListener('load',()=>{
+let playing=false;
+
+function ytCmd(cmd){
   try{
-    scW=SC.Widget(document.getElementById('sc'));
-    scW.bind(SC.Widget.Events.READY,()=>{
-      scW.setVolume(80);
-      // seek to "I love you baby" part ~28s
-      scW.seekTo(28000);
-    });
-  }catch(e){console.warn('SC:',e);}
-});
+    const yt=document.getElementById('yt');
+    yt.contentWindow.postMessage(JSON.stringify({event:'command',func:cmd,args:[]}),'*');
+  }catch(e){}
+}
 
 function toggleMusic(){
   const btn=document.getElementById('mbtn');
-  if(!scW)return;
   if(playing){
-    scW.pause();
+    ytCmd('pauseVideo');
     btn.textContent='🎵';btn.classList.remove('playing');
     playing=false;
   }else{
-    scW.play();
+    ytCmd('playVideo');
     btn.textContent='🎶';btn.classList.add('playing');
     playing=true;
   }
